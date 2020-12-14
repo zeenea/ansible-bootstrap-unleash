@@ -16,11 +16,11 @@
         version: "{{ taco_version }}"
         dest: "{{ clone_target_dir }}/{{ taco_name }}"
 
-    # - name: Get aws-unleash repository
-    #   git:
-    #     repo: "{{ project_repo }}"
-    #     version: "{{ project_version }}"
-    #     dest: "{{ clone_target_dir }}/{{ project_name }}"
+    - name: Get aws-unleash repository
+      git:
+        repo: "{{ project_repo }}"
+        version: "{{ project_version }}"
+        dest: "{{ clone_target_dir }}/{{ project_name }}"
 
     - name: Do "{{ action }}" on aws-unleash
       make:
