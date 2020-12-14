@@ -1,0 +1,35 @@
+---
+- hosts: localhost
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Create ansible central roles directory
+      file:
+        path: /etc/ansible/roles
+        state: directory
+
+    - name: Install ansible roles dependencies
+      shell: >-
+        ansible-galaxy install
+        --role-file={{ playbook_dir }}/requirements.yml
+        --roles-path=/etc/ansible/roles
+        --force
+
+    - name: Copy bootstrap playbook in place
+      copy:
+        src: "{{ playbook_dir }}/bootstrap-playbook/"
+        dest: "{{ bootstrap_install_dir }}"
+
+    - name: Create the service unit file
+      template: 
+        src: "{{ playbook_dir }}/templates/{{ bootstrap_service_name }}.service.j2"
+        dest: "/lib/systemd/system/{{ bootstrap_service_name }}.service"
+        mode: 0644
+
+    - name: Deploy service start
+      systemd:
+        name: "{{ bootstrap_service_name }}"
+        state: started
+        enabled: yes
+        daemon_reload: yes

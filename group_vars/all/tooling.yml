@@ -1,0 +1,10 @@
+---
+clone_target_dir: "{{ playbook_dir }}/deploy-env"
+taco_name: "taco-project"
+taco_repo: "https://github.com/WeScale/taco-project.git"
+taco_version: "v2.0.2"
+project_name: "aws-unleash"
+project_repo: "https://github.com/zeenea/{{ project_name }}.git"
+project_version: "master"
+deploy_makefile_target: "{{ action }}"
+client_region: "eu-west-3"

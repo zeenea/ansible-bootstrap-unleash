@@ -1,0 +1,4 @@
+---
+bootstrap_service_name: ansible-bootstrap
+bootstrap_install_dir: "/etc/ansible/playbooks"
+bootstrap_playbook_path: "{{ bootstrap_install_dir }}/bootstrap.yml"

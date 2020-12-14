@@ -1,0 +1,38 @@
+- name: Get RDS endpoint
+  hosts: localhost
+  tasks:  
+    - name: check for Aurora DB cluster
+      command: aws rds describe-db-clusters --db-cluster-identifier aurora-cluster-unleash --region eu-west-3
+      register: aurora_cluster_query
+
+    - name: parse Aurora DB cluster query
+      set_fact:
+        aurora_cluster: "{{ aurora_cluster_query.stdout | from_json | json_query('DBClusters[0]')}}"
+
+
+- name: Install unleash
+  hosts: localhost 
+  roles:
+    - role: cloudalchemy.unleash
+      vars:
+        unleash_url: "https://unleash.preprod.zeenea.app"
+        unleash_security:
+          admin_user: "admin"
+          admin_password: "admin"
+        unleash_database:
+          type: "postgres"
+          host: "{{ aurora_cluster.Endpoint }}"
+          name: "unleash"
+          user: "unleash"
+          password: "unleash-password"
+        unleash_auth:
+          generic_oauth:
+            enabled: true
+            allow_sign_up: true
+            name: "Auth0"
+            client_id: "2G8zJSpQ8lG6xB5hmbyBIFClnVbRp3vG"
+            client_secret: "pzfQOIO4-WUAIz0c0Gm_Jpkp59u5O1dTe6DKF7HDggan3N7qSjj1uamBZ99aX8m4"
+            scopes: "openid profile email"
+            auth_url: "https://zeenea-org.eu.auth0.com/authorize"
+            token_url: "https://zeenea-org.eu.auth0.com/oauth/token"
+            api_url: "https://zeenea-org.eu.auth0.com/userinfo"

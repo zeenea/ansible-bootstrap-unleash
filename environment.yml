@@ -1,0 +1,34 @@
+---
+- name: Deploy full unleash environment
+  hosts: localhost
+  gather_facts: no
+  become: no
+
+  tasks:
+    - name: Create work directory
+      file:
+        path: "{{ clone_target_dir }}"
+        state: directory
+
+    - name: Get taco repository
+      git:
+        repo: "{{ taco_repo }}"
+        version: "{{ taco_version }}"
+        dest: "{{ clone_target_dir }}/{{ taco_name }}"
+
+    # - name: Get aws-unleash repository
+    #   git:
+    #     repo: "{{ project_repo }}"
+    #     version: "{{ project_version }}"
+    #     dest: "{{ clone_target_dir }}/{{ project_name }}"
+
+    - name: Do "{{ action }}" on aws-unleash
+      make:
+        chdir: "{{ clone_target_dir }}/{{ project_name }}"
+        target: "{{ deploy_makefile_target }}"
+        file: Makefile
+      environment:
+        CLIENT_REGION: "{{ client_region }}"
+        TACO_HOME: "{{ clone_target_dir }}/{{ taco_name }}"
+        LAYERS_DIR: "{{ clone_target_dir }}/{{ project_name }}/terraform"
+        TF_VAR_aws_profile: "{{ aws_profile }}"

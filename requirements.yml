@@ -1,0 +1,11 @@
+---
+# External dependencies
+- name: seed
+  src: git+https://gitlab.com/wescalefr-oss/ansible-roles/seed.git
+  version: v2.2.0
+
+- name: aws-base
+  src: git+https://gitlab.com/wescalefr-oss/ansible-roles/aws-base.git
+  version: master
+
+- src: cloudalchemy.unleash
